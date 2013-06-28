@@ -17,11 +17,11 @@
     <string name="exam_subject">Bộ đề</string>
     <string name="cancel_exam">Hủy</string>
     <string name="start_exam">Bắt đầu</string>
-    <string name="exam_subject_title">Bạn đang thi môn</string>
+    <string name="exam_subject_title">Bạn đang thi môn : </string>
     <string name="exam_subject_title_value">" "</string>
     <string name="retry">Làm lại</string>
     <string name="check_mark">Chấm điểm</string>
-    <string name="exam_time_title">Thời gian</string>
+    <string name="exam_time_title">Thời gian : </string>
     <string name="exam_time_title_value">" "</string>
     <string name="exam_question_value">"Câu x : "</string>
 
