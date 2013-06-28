@@ -20,23 +20,24 @@ import android.util.Log;
 import com.exartisansystemvn.bean.Quiz;
 
 public abstract class BaseActivity extends Activity {
-	private boolean didInit = false;
+	protected static boolean didStart = false;
 	// saving setting variables
 	public static int checkMethod;
 	// data of the application below
-	public Map<String, ArrayList<Quiz>> examinationLibrary = new HashMap<String, ArrayList<Quiz>>();
-	public ArrayList<String> lstExaminationName = new ArrayList<String>();
+	public static Map<String, ArrayList<Quiz>> examinationLibrary = new HashMap<String, ArrayList<Quiz>>();
+	public static ArrayList<String> lstExaminationName = new ArrayList<String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getSettings();
-		doPreparationProcessOfApp();
-		displayActivity();
-		if (didInit == false) {
-			didInit = true;
-			initVariables();
+		if(didStart==false){
+			didStart = true;
+			doPreparationProcessOfApp();
 		}
+		
+		displayActivity();			
+		initVariables();
 		initViews();
 		initActions();
 	}
