@@ -125,7 +125,7 @@ public abstract class BaseActivity extends Activity {
 			// reading a line is a loop. End loop if the text file has no more
 			// lines.
 			do {
-				line = br.readLine().trim();
+				line = br.readLine();
 				if (line == null || line.equals("")) {
 					if (isPriviousEmptyLine)
 						continue;
@@ -135,15 +135,15 @@ public abstract class BaseActivity extends Activity {
 					isPriviousEmptyLine = true;
 				} else if (i == -1) {
 					isPriviousEmptyLine = false;
-					question = line;
+					question = line.trim();
 					i++;
 				} else {
 					isPriviousEmptyLine = false;
 					if (line.startsWith("*")) {
-						answers.add(new String(line.substring(1)));
+						answers.add(new String(line.trim().substring(1)));
 						correctAnswer = i;
 					} else
-						answers.add(line);
+						answers.add(line.trim());
 					i++;
 				}
 			} while (line != null);
