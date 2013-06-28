@@ -11,23 +11,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 
 import com.exartisansystemvn.bean.Quiz;
 
 
 public abstract class BaseActivity extends Activity {
 	private boolean didInit = false;
-	
+	//saving setting variables
+	public static int checkMethod;
 	//data of the application below
-	public  Map<String,ArrayList<Quiz>> examinationLibrary = new HashMap<String, ArrayList<Quiz>>();
-	public  ArrayList<String> lstExaminationName = new ArrayList<String>();
+	public Map<String,ArrayList<Quiz>> examinationLibrary = new HashMap<String, ArrayList<Quiz>>();
+	public ArrayList<String> lstExaminationName = new ArrayList<String>();
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getSettings();
 		doPreparationProcessOfApp();
 		displayActivity();
 		if(didInit == false){
@@ -143,5 +147,10 @@ public abstract class BaseActivity extends Activity {
 		}
 		return alQuiz;
 	}
+	
+	private void getSettings(){
+		  SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		  checkMethod = Integer.valueOf(preferences.getString("check_method_list", "0"));
+		 }
 	
 }

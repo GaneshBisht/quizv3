@@ -30,14 +30,12 @@ public class QuizActivity extends BaseActivity {
 	private int[] ansId;
 	private boolean submited;
 	private boolean answerornot[];
-	private int checkMethod;
 	private String examname;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getSettings();
 	}
 	
 	@Override
@@ -195,9 +193,5 @@ public class QuizActivity extends BaseActivity {
 		showQuizz(--mCurrentQuiznumber);
 	}
 	
-	private void getSettings(){
-		  SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		  checkMethod = Integer.valueOf(preferences.getString("check_method_list", "0"));
-		 }
 
 }
