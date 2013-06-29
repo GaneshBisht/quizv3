@@ -3,6 +3,7 @@ package com.exartisansystemvn.quizz;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -30,6 +31,23 @@ public class ExamHomeActivity extends BaseActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.exam, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		switch (item.getItemId()) {
+		case R.id.settings:
+		{
+			Intent intent = new Intent(this, SettingActivity.class);
+			startActivity(intent);
+			break;
+		}
+		default:
+			break;
+		}
+		
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
