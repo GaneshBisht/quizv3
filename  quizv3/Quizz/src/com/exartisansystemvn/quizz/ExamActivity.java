@@ -71,6 +71,7 @@ public class ExamActivity extends BaseActivity {
 		btnCheckMark.setOnClickListener(btnClickListener);
 		btnRetry = (Button) findViewById(R.id.btnRetryExam);
 		btnRetry.setOnClickListener(btnClickListener);
+		btnRetry.setEnabled(false);
 	}
 
 	@Override
@@ -83,6 +84,8 @@ public class ExamActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				if (v==btnCheckMark) {
+					btnCheckMark.setEnabled(false);
+					btnRetry.setEnabled(true);
 					examQuizListAdapter.setAnsDisable(true);
 					examQuizListAdapter.notifyDataSetChanged();
 					int count = 0;
@@ -93,7 +96,10 @@ public class ExamActivity extends BaseActivity {
 					Toast toast = Toast.makeText(getBaseContext(), "" + count, Toast.LENGTH_SHORT);
 					toast.show();
 				} else {
-					
+					btnRetry.setEnabled(false);
+					btnCheckMark.setEnabled(true);
+					examQuizListAdapter.restartState();
+					examQuizListAdapter.notifyDataSetChanged();
 				}
 				
 			}
