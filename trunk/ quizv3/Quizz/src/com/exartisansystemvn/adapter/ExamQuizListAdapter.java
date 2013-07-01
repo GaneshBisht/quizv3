@@ -51,6 +51,16 @@ public class ExamQuizListAdapter extends BaseAdapter {
 			ansChecks[i] = false;
 		}
 	}
+	
+	public void restartState(){
+		isAnsDisable = false;
+		ansId = new int[examQuizList.size()];
+		ansChecks = new boolean[examQuizList.size()];
+		for(int i=0; i<examQuizList.size();i++) {
+			ansId[i] = -1;
+			ansChecks[i] = false;
+		}
+	}
 
 	@Override
 	public int getCount() {
