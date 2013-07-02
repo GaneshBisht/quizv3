@@ -65,15 +65,26 @@ public class WorkingWithDocumentExtensions {
 			int correctAnswer = 0;
 			boolean isPriviousEmptyLine = false;
 			String question = null;
-			String regex = "\\w+[.|)|,|/|\\|>]";
+			boolean isFirstLine = true;
+//			String regex = "//w+[.|)|,|/|\\|>]";
 			// reading a line is a loop. End loop if the text file has no more
 			// lines.
 			do {
 				line = br.readLine();
-				if (line != null) {
+				if(isFirstLine) {
 					line = line.replaceAll("\\p{C}", "");//replace all hidden/invisible/non-printable characters
-					line = line.replaceAll(regex, "").trim();//replace all prefix of each lines
+					isFirstLine = false;
+				}
+				if (line != null) {
+//					line = line.replaceAll(regex, "").trim();//replace all prefix of each lines
 					//Log.e("count" , " " + Integer.valueOf(line.charAt(0)));
+					for (int index = 0; index < line.length(); index++) {
+						char chartemp = line.charAt(index);
+						if(chartemp=='.'||chartemp==')'||chartemp==','||chartemp=='/'||chartemp=='\\'||chartemp=='>'){
+							line = line.substring(index+1);
+							break;
+						}
+					}
 				}
 				if (line == null || line.equals("")) {
 					if (isPriviousEmptyLine||question==null)
