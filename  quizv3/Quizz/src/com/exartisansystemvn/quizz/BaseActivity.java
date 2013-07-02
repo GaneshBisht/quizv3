@@ -128,7 +128,7 @@ public abstract class BaseActivity extends Activity {
 				line = br.readLine();
 				if (line != null) {
 					line = line.trim();
-					Log.e("count" , " " + Integer.valueOf(line.charAt(0)));
+					//Log.e("count" , " " + Integer.valueOf(line.charAt(0)));
 				}
 				if (line == null || line.equals("")) {
 					if (isPriviousEmptyLine||question == null)
