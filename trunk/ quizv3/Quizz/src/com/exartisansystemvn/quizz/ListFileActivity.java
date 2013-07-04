@@ -16,7 +16,6 @@ public class ListFileActivity extends BaseActivity implements OnItemClickListene
 	
 	private ListView lvFiles;
 	private ArrayAdapter<String> lvFilesAdapter;
-	private int setting = 0;
 	private ExamLibraryManager examManager;
 
 	@Override

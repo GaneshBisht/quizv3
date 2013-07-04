@@ -2,8 +2,6 @@ package com.exartisansystemvn.quizz;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -13,7 +11,6 @@ import android.os.FileObserver;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.exartisansystemvn.bean.Quiz;
 import com.exartisansystemvn.datamanager.ExamLibraryManager;
 import com.exartisansystemvn.util.WorkingWithDocumentExtensions;
 
@@ -22,21 +19,22 @@ public abstract class BaseActivity extends Activity {
 	// saving setting variables
 	public static int checkMethod;
 	// data of the application below
-	public static Map<String, ArrayList<Quiz>> examinationLibrary = new HashMap<String, ArrayList<Quiz>>();
-	public static ArrayList<String> lstExaminationName = new ArrayList<String>();
-	
+
+	private final String folderName = "test";
+	private String extension = ".txt";
+
 	private ExamLibraryManager examManager = new ExamLibraryManager();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getSettings();
-		if(didStart==false){
+		if (didStart == false) {
 			didStart = true;
 			doPreparationProcessOfApp();
 		}
 		observeFiles();
-		displayActivity();			
+		displayActivity();
 		initVariables();
 		initViews();
 		initActions();
@@ -69,20 +67,16 @@ public abstract class BaseActivity extends Activity {
 	 */
 	private void doPreparationProcessOfApp() {
 		ArrayList<File> lstQuizFile = new ArrayList<File>();
-		ArrayList<Quiz> lstQuiz = new ArrayList<Quiz>();
 		WorkingWithDocumentExtensions docWorker = new WorkingWithDocumentExtensions();
 		long start = System.currentTimeMillis();
-		lstQuizFile = docWorker.scanFilesInAFolderFromSDCard("test", ".txt");
+		lstQuizFile = docWorker.scanFilesInAFolderFromSDCard(folderName,
+				extension);
 		for (File efile : lstQuizFile) {
 			String fileName = efile.getName();
-			examManager.addExam("test", fileName);
-			/*String examname = filename.substring(0, filename.indexOf("."));
-			lstExaminationName.add(examname);
-			lstQuiz = docWorker.handleContentOfTextFile(efile);
-			examinationLibrary.put(examname, lstQuiz);*/
+			examManager.addExam(folderName, fileName);
 		}
 		long end = System.currentTimeMillis();
-		Log.i("Running Time", ""+(end-start)/1000);
+		Log.i("Running Time", "" + (end - start) / 1000);
 	}
 
 	private void getSettings() {
@@ -91,20 +85,42 @@ public abstract class BaseActivity extends Activity {
 		checkMethod = Integer.valueOf(preferences.getString(
 				"check_method_list", "0"));
 	}
-	
+
 	protected void observeFiles() {
-		final String directory = Environment.getExternalStorageDirectory().getAbsolutePath().concat("/test");
+		final String directory = Environment.getExternalStorageDirectory()
+				.getAbsolutePath().concat("/" + folderName);
+		final WorkingWithDocumentExtensions docWorker = new WorkingWithDocumentExtensions();
 		FileObserver fileObserver = new FileObserver(directory) {
-			
+
 			@Override
 			public void onEvent(int event, String fileName) {
-//				  Log.d("FileObserver", event+":" + directory+ "/" + fileName);
-				if(event==FileObserver.DELETE){
-					examManager.deleteExam(fileName);
+				Log.d("FileObserver", event + ":" + directory + "/" + fileName);
+				if (docWorker.matchExtension(fileName, extension)) {
+					switch (event) {
+					case FileObserver.DELETE:
+						examManager.deleteExam(fileName);
+						break;
+					case FileObserver.CLOSE_WRITE:
+						if (examManager.containsKey(fileName)) {
+							examManager.updateExam(folderName, fileName);
+						} else {
+							examManager.addExam(folderName, fileName);
+						}
+						break;
+					case FileObserver.CLOSE_NOWRITE:
+
+					case FileObserver.MOVED_TO:
+						examManager.addExam(folderName, fileName);
+						break;
+					case FileObserver.MOVED_FROM:
+						examManager.deleteExam(fileName);
+						break;
+					}
 				}
+
 			}
 		};
-		fileObserver.startWatching(); //START OBSERVING 
+		fileObserver.startWatching(); // START OBSERVING
 	}
 
 }
