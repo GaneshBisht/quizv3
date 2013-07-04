@@ -1,5 +1,7 @@
 package com.exartisansystemvn.quizz;
 
+import com.exartisansystemvn.datamanager.ExamLibraryManager;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,7 +17,7 @@ public class ListFileActivity extends BaseActivity implements OnItemClickListene
 	private ListView lvFiles;
 	private ArrayAdapter<String> lvFilesAdapter;
 	private int setting = 0;
-	
+	private ExamLibraryManager examManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,8 @@ public class ListFileActivity extends BaseActivity implements OnItemClickListene
 
 	@Override
 	protected void initVariables() {
-		lvFilesAdapter = new ArrayAdapter<String>(this, R.layout.row, lstExaminationName);
+		examManager = new ExamLibraryManager();
+		lvFilesAdapter = new ArrayAdapter<String>(this, R.layout.row, examManager.getListExamName());
 	}
 
 	@Override

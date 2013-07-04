@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.exartisansystemvn.bean.Quiz;
-
 import android.os.Environment;
 import android.util.Log;
+
+import com.exartisansystemvn.bean.Quiz;
 
 public class WorkingWithDocumentExtensions {
 	
@@ -29,8 +29,7 @@ public class WorkingWithDocumentExtensions {
 	 */
 	public ArrayList<File> scanFilesInAFolderFromSDCard(String folderName, final String extension) {
 		ArrayList<File> alFile = new ArrayList<File>();
-		File folder = new File(Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/".concat(folderName));
+		File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/".concat(folderName));
 		// String[] listQuizz;
 		// ArrayList<String> listQuizz = new ArrayList<String>();
 		folder.mkdirs();
@@ -50,12 +49,12 @@ public class WorkingWithDocumentExtensions {
 	/**
 	 * Read line by line of the Quiz File and handle each line by following
 	 * determind it is question or answer or the end of quiz. Then, the value
-	 * them are set into properties of the Quiz class. After all, we've got a
+	 * them are set into properties of Quiz Objects. After all, we've got a
 	 * list of quizs.
 	 * @param aFile - A quiz file
 	 * @return ArrayList< Quiz > - List of quiz in the Quiz File
 	 */
-	public ArrayList<Quiz> readContentOfQuizFile(File aFile) {
+	public ArrayList<Quiz> handleContentOfTextFile(File aFile) {
 		ArrayList<Quiz> alQuiz = new ArrayList<Quiz>();
 		ArrayList<String> answers = new ArrayList<String>();
 		try {
@@ -66,22 +65,30 @@ public class WorkingWithDocumentExtensions {
 			boolean isPriviousEmptyLine = false;
 			String question = null;
 			boolean isFirstLine = true;
+			boolean markedLine = false;
 //			String regex = "//w+[.|)|,|/|\\|>]";
 			// reading a line is a loop. End loop if the text file has no more
 			// lines.
 			do {
 				line = br.readLine();
 				if(isFirstLine) {
-					line = line.replaceAll("\\p{C}", "");//replace all hidden/invisible/non-printable characters
+					line = line.replaceFirst("\\p{C}", "");//replace all hidden/invisible/non-printable characters
 					isFirstLine = false;
 				}
 				if (line != null) {
 //					line = line.replaceAll(regex, "").trim();//replace all prefix of each lines
 					//Log.e("count" , " " + Integer.valueOf(line.charAt(0)));
+					
 					for (int index = 0; index < line.length(); index++) {
 						char chartemp = line.charAt(index);
+						if(chartemp=='*') markedLine=true;
 						if(chartemp=='.'||chartemp==')'||chartemp==','||chartemp=='/'||chartemp=='\\'||chartemp=='>'){
-							line = line.substring(index+1);
+							line = line.substring(index+1).trim();
+							//take back character '*' for each correct answers
+							if(markedLine) {
+								line = new String("*" + line);
+								markedLine = false;
+							}	
 							break;
 						}
 					}
@@ -115,4 +122,26 @@ public class WorkingWithDocumentExtensions {
 		}
 		return alQuiz;
 	}
+	
+	/*public ArrayList<Quiz> handleContentOfWordFile(File aFile, String extension){
+		try {
+			FileInputStream finStream = new FileInputStream(aFile);
+			if(extension.equals(".doc")) {
+				HWPFDocument doc = new HWPFDocument(finStream);
+				WordExtractor wordExtractor = new WordExtractor(doc);
+			} else if(extension.equals(".docx")){
+				
+			}
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+	}*/
+	
 }

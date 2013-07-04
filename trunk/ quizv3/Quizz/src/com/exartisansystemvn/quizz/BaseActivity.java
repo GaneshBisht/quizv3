@@ -8,9 +8,13 @@ import java.util.Map;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.FileObserver;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.exartisansystemvn.bean.Quiz;
+import com.exartisansystemvn.datamanager.ExamLibraryManager;
 import com.exartisansystemvn.util.WorkingWithDocumentExtensions;
 
 public abstract class BaseActivity extends Activity {
@@ -20,6 +24,8 @@ public abstract class BaseActivity extends Activity {
 	// data of the application below
 	public static Map<String, ArrayList<Quiz>> examinationLibrary = new HashMap<String, ArrayList<Quiz>>();
 	public static ArrayList<String> lstExaminationName = new ArrayList<String>();
+	
+	private ExamLibraryManager examManager = new ExamLibraryManager();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +35,7 @@ public abstract class BaseActivity extends Activity {
 			didStart = true;
 			doPreparationProcessOfApp();
 		}
-		
+		observeFiles();
 		displayActivity();			
 		initVariables();
 		initViews();
@@ -65,14 +71,18 @@ public abstract class BaseActivity extends Activity {
 		ArrayList<File> lstQuizFile = new ArrayList<File>();
 		ArrayList<Quiz> lstQuiz = new ArrayList<Quiz>();
 		WorkingWithDocumentExtensions docWorker = new WorkingWithDocumentExtensions();
+		long start = System.currentTimeMillis();
 		lstQuizFile = docWorker.scanFilesInAFolderFromSDCard("test", ".txt");
 		for (File efile : lstQuizFile) {
-			String filename = efile.getName();
-			String examname = filename.substring(0, filename.indexOf("."));
+			String fileName = efile.getName();
+			examManager.addExam("test", fileName);
+			/*String examname = filename.substring(0, filename.indexOf("."));
 			lstExaminationName.add(examname);
-			lstQuiz = docWorker.readContentOfQuizFile(efile);
-			examinationLibrary.put(examname, lstQuiz);
+			lstQuiz = docWorker.handleContentOfTextFile(efile);
+			examinationLibrary.put(examname, lstQuiz);*/
 		}
+		long end = System.currentTimeMillis();
+		Log.i("Running Time", ""+(end-start)/1000);
 	}
 
 	private void getSettings() {
@@ -80,6 +90,21 @@ public abstract class BaseActivity extends Activity {
 				.getDefaultSharedPreferences(this);
 		checkMethod = Integer.valueOf(preferences.getString(
 				"check_method_list", "0"));
+	}
+	
+	protected void observeFiles() {
+		final String directory = Environment.getExternalStorageDirectory().getAbsolutePath().concat("/test");
+		FileObserver fileObserver = new FileObserver(directory) {
+			
+			@Override
+			public void onEvent(int event, String fileName) {
+//				  Log.d("FileObserver", event+":" + directory+ "/" + fileName);
+				if(event==FileObserver.DELETE){
+					examManager.deleteExam(fileName);
+				}
+			}
+		};
+		fileObserver.startWatching(); //START OBSERVING 
 	}
 
 }
