@@ -28,7 +28,7 @@ public ArrayList<String> getListExamName(){
 
 public ArrayList<Quiz> getExamContent(String examName){
 	String fileName = getFileNameFrom(examName, null);
-	if (fileName!=null) return examLibrary.get(examName).getContent(); 
+	if (fileName!=null) return examLibrary.get(fileName).getContent(); 
 	else return null;
 }
 

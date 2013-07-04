@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.exartisansystemvn.adapter.ExamQuizListAdapter;
 import com.exartisansystemvn.bean.Quiz;
+import com.exartisansystemvn.datamanager.ExamLibraryManager;
 
 public class ExamActivity extends BaseActivity {
 	
@@ -34,6 +35,7 @@ public class ExamActivity extends BaseActivity {
 	private OnClickListener btnClickListener;
 	private ExamQuizListAdapter examQuizListAdapter;
 	private CountDownTimer examTimeCountDown;
+	private ExamLibraryManager libraryManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +93,10 @@ public class ExamActivity extends BaseActivity {
 
 	@Override
 	protected void initVariables() {
+		libraryManager = new ExamLibraryManager();
 		subject = " " + getIntent().getExtras().getString("subject");
 		time = " " + getIntent().getExtras().getString("time") + "'";
-		examQuizListAdapter = new ExamQuizListAdapter(this, shuffleExamQuiz(examinationLibrary.get(subject.trim()), true));
+		examQuizListAdapter = new ExamQuizListAdapter(this, shuffleExamQuiz(libraryManager.getExamContent(subject.trim()), true));
 		//examQuizListAdapter = new ExamQuizListAdapter(this, examinationLibrary.get(subject.trim()));
 		btnClickListener = new OnClickListener() {
 			
