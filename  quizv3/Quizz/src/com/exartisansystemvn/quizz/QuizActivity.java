@@ -2,13 +2,9 @@ package com.exartisansystemvn.quizz;
 
 import java.util.Collections;
 
-import com.exartisansystemvn.datamanager.ExamLibraryManager;
-
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +14,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
+
+import com.exartisansystemvn.datamanager.ExamLibraryManager;
 
 public class QuizActivity extends BaseActivity {
 	private TextView tvQnums;

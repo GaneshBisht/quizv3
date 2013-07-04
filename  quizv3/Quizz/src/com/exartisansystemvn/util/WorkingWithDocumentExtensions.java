@@ -123,6 +123,9 @@ public class WorkingWithDocumentExtensions {
 		return alQuiz;
 	}
 	
+	public boolean matchExtension(String fileName, String extension){
+		return fileName.matches(extension);
+	}
 	/*public ArrayList<Quiz> handleContentOfWordFile(File aFile, String extension){
 		try {
 			FileInputStream finStream = new FileInputStream(aFile);
