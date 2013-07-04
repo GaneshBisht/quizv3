@@ -81,6 +81,10 @@ public class ExamQuizListAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		final int pos = position;
+		char[]ansHead = new char[examQuizList.get(position).getAnswers().size()];
+		ansHead[0] = 'A';
+		String[] qHead = new String[examQuizList.size()];
+		for (int i=0; i<qHead.length; i++) qHead[i] = String.valueOf(i + 1);
 		if (convertView == null){
 			convertView = inflater.inflate(com.exartisansystemvn.quizz.R.layout.exam_row, null);
 			holder = new ViewHolder();
@@ -88,13 +92,17 @@ public class ExamQuizListAdapter extends BaseAdapter {
 			holder.rdAnswers = (RadioGroup) convertView.findViewById(com.exartisansystemvn.quizz.R.id.rdExamAnswers);
 			convertView.setTag(holder);
 		} else holder = (ViewHolder) convertView.getTag();
-		holder.tvQuestion.setText(examQuizList.get(position).getQuestion());
+		holder.tvQuestion.setText(new String(qHead[position] + "/ " + examQuizList.get(position).getQuestion()));
 		holder.rdAnswers.removeAllViews();
 		
         for (int i = 0; i<examQuizList.get(position).getAnswers().size(); i++){
+        	if (i > 0) {
+        		ansHead[i] = ansHead[i-1];
+        		ansHead[i]++;
+        	}
         	RadioButton radioButton = new RadioButton(context);
         	radioButton.setId(i);
-			radioButton.setText(examQuizList.get(position).getAnswers().get(i));
+			radioButton.setText(new String(ansHead[i] + ". " + examQuizList.get(position).getAnswers().get(i)));
 			radioButton.setEnabled(!isAnsDisable);
 			holder.rdAnswers.addView(radioButton);	
         }
