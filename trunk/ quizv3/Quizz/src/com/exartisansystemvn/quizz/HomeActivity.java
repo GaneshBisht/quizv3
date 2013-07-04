@@ -1,7 +1,6 @@
 package com.exartisansystemvn.quizz;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,7 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends BaseActivity {
 	
 	private Button btnPractice;
 	private Button btnExam;
@@ -17,8 +16,6 @@ public class HomeActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.home);
-		initViews();
 	}
 
 	@Override
@@ -59,12 +56,32 @@ public class HomeActivity extends Activity {
 			
 		}
 	};
-	
-	private void initViews(){
+
+	@Override
+	protected void displayActivity() {
+		setContentView(R.layout.home);
+		
+	}
+
+	@Override
+	protected void initViews() {
 		btnExam = (Button) findViewById(R.id.btnExam);
 		btnExam.setOnClickListener(btnsListener);
 		btnPractice = (Button) findViewById(R.id.btnPractice);
 		btnPractice.setOnClickListener(btnsListener);
+		
+	}
+
+	@Override
+	protected void initVariables() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initActions() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
