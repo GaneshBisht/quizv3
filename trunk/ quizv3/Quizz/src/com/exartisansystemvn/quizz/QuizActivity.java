@@ -48,7 +48,7 @@ public class QuizActivity extends BaseActivity {
 	}
 	
 	protected void initVariables() {
-		
+		libraryManager = new ExamLibraryManager();
 		mCurrentQuiznumber = 1;
 		quiznums = 0;
 		submited = false;
@@ -70,8 +70,7 @@ public class QuizActivity extends BaseActivity {
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				if (checkedId != -1)
 					ansId[mCurrentQuiznumber - 1] = checkedId;
-				if (checkedId == examinationLibrary.get(examname).get(mCurrentQuiznumber - 1)
-						.getCorrectAnswer())
+				if(checkedId == libraryManager.getExamContent(examname).get(mCurrentQuiznumber - 1).getCorrectAnswer())
 					userAnswers[mCurrentQuiznumber - 1] = true;
 
 			}
@@ -82,7 +81,7 @@ public class QuizActivity extends BaseActivity {
 	protected void initActions() {
 
 		examname = this.getIntent().getExtras().getString("examname");
-		quiznums = examinationLibrary.get(examname).size();
+		quiznums = libraryManager.getExamContent(examname).size();
 		tvQnums.setText("" + quiznums);
 		userAnswers = new boolean[quiznums];
 		ansId = new int[quiznums];
@@ -92,7 +91,7 @@ public class QuizActivity extends BaseActivity {
 		for (int i = 0; i < answerornot.length; i++) {
 			answerornot[i] = false;
 		}
-		Collections.shuffle(examinationLibrary.get(examname));
+		Collections.shuffle(libraryManager.getExamContent(examname));
 		showQuizz(mCurrentQuiznumber);
 		// after option choice(0 or 1) will affect on button submit and answer
 		onAfterSetting(checkMethod);
@@ -124,13 +123,13 @@ public class QuizActivity extends BaseActivity {
 	 */
 	private void showQuizz(int currentQuiznumber) {
 		if (currentQuiznumber - 1 >= 0 && currentQuiznumber - 1 < quiznums) {
-			tvQuestion.setText(examinationLibrary.get(examname).get(currentQuiznumber - 1).getQuestion());
+			tvQuestion.setText(libraryManager.getExamContent(examname).get(currentQuiznumber - 1).getQuestion());
 			rdAnswers.removeAllViews();
 
-			for (int i = 0; i < examinationLibrary.get(examname).get(currentQuiznumber - 1).getAnswers()
+			for (int i = 0; i < libraryManager.getExamContent(examname).get(currentQuiznumber - 1).getAnswers()
 					.size(); i++) {
 				RadioButton radioButton = new RadioButton(this);
-				radioButton.setText(examinationLibrary.get(examname).get(currentQuiznumber - 1)
+				radioButton.setText(libraryManager.getExamContent(examname).get(currentQuiznumber - 1)
 						.getAnswers().get(i));
 				radioButton.setId(i);
 				if (submited)
@@ -140,9 +139,9 @@ public class QuizActivity extends BaseActivity {
 
 			if (answerornot[currentQuiznumber - 1] == true) {
 				rdAnswers.getChildAt(
-						examinationLibrary.get(examname).get(currentQuiznumber - 1).getCorrectAnswer())
+						libraryManager.getExamContent(examname).get(currentQuiznumber - 1).getCorrectAnswer())
 						.setBackgroundColor(Color.RED);
-				if (examinationLibrary.get(examname).get(currentQuiznumber - 1).getCorrectAnswer() != ansId[currentQuiznumber - 1]&&ansId[currentQuiznumber - 1]!=-1)
+				if (libraryManager.getExamContent(examname).get(currentQuiznumber - 1).getCorrectAnswer() != ansId[currentQuiznumber - 1]&&ansId[currentQuiznumber - 1]!=-1)
 					rdAnswers.getChildAt(ansId[currentQuiznumber - 1])
 							.setBackgroundColor(Color.BLUE);
 				for (int i = 0; i < rdAnswers.getChildCount(); i++)
@@ -192,8 +191,8 @@ public class QuizActivity extends BaseActivity {
 		}
 		tvResult.setText("" + count);
 		btnSubmit.setEnabled(false);
-		for(int i=0; i<examinationLibrary.get(examname).size();i++) {
-			listresult = listresult+(i+1)+". "+ examinationLibrary.get(examname).get(i).getAnswers().get(examinationLibrary.get(examname).get(i).getCorrectAnswer()).substring(0, 1)+"\n";
+		for(int i=0; i<libraryManager.getExamContent(examname).size();i++) {
+			listresult = listresult+(i+1)+". "+ libraryManager.getExamContent(examname).get(i).getAnswers().get(libraryManager.getExamContent(examname).get(i).getCorrectAnswer()).substring(0, 1)+"\n";
 		}
 		tvListResult.setText(listresult);
 		// for after submit

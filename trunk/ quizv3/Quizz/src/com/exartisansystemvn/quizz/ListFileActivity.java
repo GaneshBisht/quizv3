@@ -49,7 +49,7 @@ public class ListFileActivity extends BaseActivity implements OnItemClickListene
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		Intent intent = new Intent(this, QuizActivity.class);
-		intent.putExtra("examname", lstExaminationName.get(arg2));
+		intent.putExtra("examname", examManager.getListExamName().get(arg2));
 		startActivity(intent);
 	}
 	
