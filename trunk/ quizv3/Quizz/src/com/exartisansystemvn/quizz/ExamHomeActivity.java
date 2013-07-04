@@ -1,5 +1,7 @@
 package com.exartisansystemvn.quizz;
 
+import com.exartisansystemvn.datamanager.ExamLibraryManager;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,6 +21,7 @@ public class ExamHomeActivity extends BaseActivity {
 	private OnClickListener btnClickListener;
 	private ArrayAdapter<String> subjectAdapter;
 	private ArrayAdapter<Integer> timeAdapter;
+	private ExamLibraryManager libraryManager;
 	//private OnItemSelectedListener spinnerlListener;
 	private Integer[] timeArray = {30, 45, 60};
 	@Override
@@ -71,7 +74,8 @@ public class ExamHomeActivity extends BaseActivity {
 
 	@Override
 	protected void initVariables() {
-		subjectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,lstExaminationName);
+		libraryManager = new ExamLibraryManager();
+		subjectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,libraryManager.getListExamName());
 		subjectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		timeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, timeArray);
 		timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
