@@ -2,6 +2,8 @@ package com.exartisansystemvn.quizz;
 
 import java.util.Collections;
 
+import com.exartisansystemvn.datamanager.ExamLibraryManager;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -33,7 +35,7 @@ public class QuizActivity extends BaseActivity {
 	private boolean submited;
 	private boolean answerornot[];
 	private String examname;
-
+	private ExamLibraryManager libraryManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class QuizActivity extends BaseActivity {
 	}
 	
 	protected void initVariables() {
+		
 		mCurrentQuiznumber = 1;
 		quiznums = 0;
 		submited = false;
