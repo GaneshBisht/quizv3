@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.os.Environment;
+import android.util.Log;
 
 import com.exartisansystemvn.bean.Exam;
 import com.exartisansystemvn.bean.Quiz;
@@ -77,8 +78,10 @@ public class ExamLibraryManager {
 				+ "/".concat(folderName)
 				+ "/".concat(fileName));
 		examToAdd.setExamName(getExamNameFrom(fileName));
-//		examToAdd.setContent(docWorker.handleContentOfTextFile(examFile));
-		examToAdd.setContent(docWorker.handleContentOfWordFile(examFile, ".doc"));
+		if(docWorker.matchExtension(fileName, ".doc")) 
+			  examToAdd.setContent(docWorker.handleContentOfWordFile(examFile, ".doc"));		
+		else examToAdd.setContent(docWorker.handleContentOfTextFile(examFile));
+		
 		examLibrary.put(fileName, examToAdd);
 	}
 

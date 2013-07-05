@@ -21,7 +21,7 @@ public abstract class BaseActivity extends Activity {
 	// data of the application below
 
 	private final String folderName = "test";
-	private String extension = ".doc";
+	private String[] extension = {".txt",".doc"};
 
 	private ExamLibraryManager examManager = new ExamLibraryManager();
 
@@ -95,7 +95,7 @@ public abstract class BaseActivity extends Activity {
 			@Override
 			public void onEvent(int event, String fileName) {
 				Log.d("FileObserver", event + ":" + directory + "/" + fileName);
-				if (docWorker.matchExtension(fileName, extension)) {
+				if (docWorker.matchExtension(fileName, extension[0])||docWorker.matchExtension(fileName, extension[1])) {
 					switch (event) {
 					case FileObserver.DELETE:
 						examManager.deleteExam(fileName);

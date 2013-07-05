@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.textmining.text.extraction.WordExtractor;
 
@@ -19,6 +21,8 @@ import android.util.Log;
 import com.exartisansystemvn.bean.Quiz;
 
 public class WorkingWithDocumentExtensions {
+	
+	private String regex;
 	
 	/**
 	 * @param folderName - A Folder Name which has files you want to scan 
@@ -32,7 +36,12 @@ public class WorkingWithDocumentExtensions {
 	 * lstFiles = scanFilesInAFolderFromSDCard(folderName,extension);<br>
 	 * </blockquote>
 	 */
-	public ArrayList<File> scanFilesInAFolderFromSDCard(String folderName, final String extension) {
+	public ArrayList<File> scanFilesInAFolderFromSDCard(String folderName, final String[] extension) {
+		for (int i = 0; i < extension.length; i++) {
+			regex = extension[i].substring(1)+"|"+regex;
+		}
+		regex = "[.]"+regex;
+		
 		ArrayList<File> alFile = new ArrayList<File>();
 		File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/".concat(folderName));
 		// String[] listQuizz;
@@ -42,7 +51,8 @@ public class WorkingWithDocumentExtensions {
 
 			@Override
 			public boolean accept(File pathname) {
-				return pathname.getAbsolutePath().matches(".*\\".concat(extension));
+//				return pathname.getAbsolutePath().matches(".*\\"+extension);
+				return matchExtension(pathname.getAbsolutePath(), regex);
 			}
 		};
 		// for (int i = 0; i < folder.listFiles(filter).length; i++)
@@ -59,77 +69,12 @@ public class WorkingWithDocumentExtensions {
 	 * @param aFile - A quiz file
 	 * @return ArrayList< Quiz > - List of quiz in the Quiz File
 	 */
-	/*public ArrayList<Quiz> handleContentOfTextFile(File aFile) {
-		ArrayList<Quiz> alQuiz = new ArrayList<Quiz>();
-		ArrayList<String> answers = new ArrayList<String>();
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(aFile));
-			String line;
-			int i = -1;
-			int correctAnswer = 0;
-			boolean isPriviousEmptyLine = false;
-			String question = null;
-			boolean isFirstLine = true;
-			boolean markedLine = false;
-//			String regex = "//w+[.|)|,|/|\\|>]";
-			// reading a line is a loop. End loop if the text file has no more
-			// lines.
-			do {
-				line = br.readLine();
-				if(isFirstLine) {
-					line = line.replaceFirst("\\p{C}", "");//replace all hidden/invisible/non-printable characters
-					isFirstLine = false;
-				}
-				if (line != null) {
-//					line = line.replaceAll(regex, "").trim();//replace all prefix of each lines
-					//Log.e("count" , " " + Integer.valueOf(line.charAt(0)));
-					
-					for (int index = 0; index < line.length(); index++) {
-						char chartemp = line.charAt(index);
-						if(chartemp=='*') markedLine=true;
-						if(chartemp=='.'||chartemp==')'||chartemp==','||chartemp=='/'||chartemp=='\\'||chartemp=='>'){
-							line = line.substring(index+1).trim();
-							//take back character '*' for each correct answers
-							if(markedLine) {
-								line = new String("*" + line);
-								markedLine = false;
-							}	
-							break;
-						}
-					}
-				}
-				if (line == null || line.equals("")) {
-					if (isPriviousEmptyLine||question==null)
-						continue;
-					alQuiz.add(new Quiz(question, answers, correctAnswer));
-					i = -1;
-					answers = new ArrayList<String>();
-					isPriviousEmptyLine = true;
-				} else if (i == -1) {
-					isPriviousEmptyLine = false;
-					question = line;
-					i++;
-				} else {
-					isPriviousEmptyLine = false;
-					if (line.startsWith("*")) {
-						answers.add(new String(line.substring(1).trim()));
-						correctAnswer = i;
-					} else
-						answers.add(line);
-					i++;
-				}
-			} while (line != null);
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-			Log.e("NullPointerException", "because of method: trim()");
-		}
-		return alQuiz;
-	}*/
 	
-	public boolean matchExtension(String fileName, String extension){
-		return fileName.matches(extension);
+	public boolean matchExtension(String fileName, String extension) {
+		Pattern pattern = Pattern.compile(extension);
+		Matcher matcher = pattern.matcher(fileName);
+		if (matcher.find()) return true;
+		else return false;
 	}
 
 	public ArrayList<Quiz> handleContentOfTextFile(File aFile){
