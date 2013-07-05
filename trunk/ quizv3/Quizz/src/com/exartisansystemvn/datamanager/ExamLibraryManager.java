@@ -2,7 +2,6 @@ package com.exartisansystemvn.datamanager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import android.os.Environment;
@@ -11,6 +10,12 @@ import com.exartisansystemvn.bean.Exam;
 import com.exartisansystemvn.bean.Quiz;
 import com.exartisansystemvn.util.WorkingWithDocumentExtensions;
 
+/**
+ * Sau này sử dụng singleton pattern
+ * 
+ * @author abc
+ * 
+ */
 public class ExamLibraryManager {
 	private static HashMap<String, Exam> examLibrary;
 
@@ -60,6 +65,7 @@ public class ExamLibraryManager {
 
 	/**
 	 * luc khac viet lai phan kiem tra xem luc nao thi add thanh cong hay ko
+	 * 
 	 * @param folderName
 	 * @param fileName
 	 */
@@ -71,12 +77,14 @@ public class ExamLibraryManager {
 				+ "/".concat(folderName)
 				+ "/".concat(fileName));
 		examToAdd.setExamName(getExamNameFrom(fileName));
-		examToAdd.setContent(docWorker.handleContentOfTextFile(examFile));
+//		examToAdd.setContent(docWorker.handleContentOfTextFile(examFile));
+		examToAdd.setContent(docWorker.handleContentOfWordFile(examFile, ".doc"));
 		examLibrary.put(fileName, examToAdd);
 	}
 
 	/**
 	 * luc khac viet lai phan kiem tra xem luc nao thi update thanh cong hay ko
+	 * 
 	 * @param folderName
 	 * @param fileName
 	 */
@@ -84,9 +92,11 @@ public class ExamLibraryManager {
 		deleteExam(fileName);
 		addExam(folderName, fileName);
 	}
-	
-	public boolean containsKey(String fileName){
-		if(examLibrary.containsKey(fileName)) return true;
-		else return false;
+
+	public boolean containsKey(String fileName) {
+		if (examLibrary.containsKey(fileName))
+			return true;
+		else
+			return false;
 	}
 }
