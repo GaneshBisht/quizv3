@@ -21,7 +21,7 @@ public abstract class BaseActivity extends Activity {
 	// data of the application below
 
 	private final String folderName = "test";
-	private String extension = ".txt";
+	private String extension = ".doc";
 
 	private ExamLibraryManager examManager = new ExamLibraryManager();
 
