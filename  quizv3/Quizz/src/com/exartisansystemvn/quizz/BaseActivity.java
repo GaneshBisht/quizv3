@@ -4,10 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -66,17 +68,34 @@ public abstract class BaseActivity extends Activity {
 	 * the application. Thus, write once, use the data everywhere.
 	 */
 	private void doPreparationProcessOfApp() {
-		ArrayList<File> lstQuizFile = new ArrayList<File>();
-		WorkingWithDocumentExtensions docWorker = new WorkingWithDocumentExtensions();
-		long start = System.currentTimeMillis();
-		lstQuizFile = docWorker.scanFilesInAFolderFromSDCard(folderName,
-				extension);
-		for (File efile : lstQuizFile) {
-			String fileName = efile.getName();
-			examManager.addExam(folderName, fileName);
-		}
-		long end = System.currentTimeMillis();
-		Log.i("Running Time", "" + (end - start) / 1000);
+		final Handler dataHandler = new Handler();
+		final ProgressDialog dataProgressDialog = ProgressDialog.show(this, "Loading data", "Plese wait ...");
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				ArrayList<File> lstQuizFile = new ArrayList<File>();
+				WorkingWithDocumentExtensions docWorker = new WorkingWithDocumentExtensions();
+				long start = System.currentTimeMillis();
+				lstQuizFile = docWorker.scanFilesInAFolderFromSDCard(folderName,
+						extension);
+				for (File efile : lstQuizFile) {
+					String fileName = efile.getName();
+					examManager.addExam(folderName, fileName);
+				}
+				long end = System.currentTimeMillis();
+				dataHandler.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						dataProgressDialog.dismiss();
+						
+					}
+				});
+				Log.i("Running Time", "" + (end - start) / 1000);
+				
+			}
+		}).start();
 	}
 
 	private void getSettings() {
