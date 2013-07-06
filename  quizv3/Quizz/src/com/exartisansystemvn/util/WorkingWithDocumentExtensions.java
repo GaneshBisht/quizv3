@@ -22,11 +22,9 @@ import com.exartisansystemvn.bean.Quiz;
 
 public class WorkingWithDocumentExtensions {
 	
-	private String regex;
-	
 	/**
 	 * @param folderName - A Folder Name which has files you want to scan 
-	 * @param extension - extension or file type.
+	 * @param extensions[] - String Array of extensions or file types.
 	 * @return ArrayList< File > - List of files you've just scanned
 	 * @Example <br>
 	 * <blockquote>
@@ -36,12 +34,7 @@ public class WorkingWithDocumentExtensions {
 	 * lstFiles = scanFilesInAFolderFromSDCard(folderName,extension);<br>
 	 * </blockquote>
 	 */
-	public ArrayList<File> scanFilesInAFolderFromSDCard(String folderName, final String[] extension) {
-		for (int i = 0; i < extension.length; i++) {
-			regex = extension[i].substring(1)+"|"+regex;
-		}
-		regex = "[.]"+regex;
-		
+	public ArrayList<File> scanFilesInAFolderFromSDCard(String folderName, final String[] extensions) {
 		ArrayList<File> alFile = new ArrayList<File>();
 		File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/".concat(folderName));
 		// String[] listQuizz;
@@ -52,7 +45,7 @@ public class WorkingWithDocumentExtensions {
 			@Override
 			public boolean accept(File pathname) {
 //				return pathname.getAbsolutePath().matches(".*\\"+extension);
-				return matchExtension(pathname.getAbsolutePath(), regex);
+				return hasAValidExtension(pathname.getAbsolutePath(), extensions);
 			}
 		};
 		// for (int i = 0; i < folder.listFiles(filter).length; i++)
@@ -62,21 +55,11 @@ public class WorkingWithDocumentExtensions {
 	}
 	
 	/**
-	 * Read line by line of the Quiz File and handle each line by following
-	 * determind it is question or answer or the end of quiz. Then, the value
-	 * them are set into properties of Quiz Objects. After all, we've got a
-	 * list of quizs.
-	 * @param aFile - A quiz file
-	 * @return ArrayList< Quiz > - List of quiz in the Quiz File
+	 * For only reading text files, This reads content and handle it. 
+	 * In other words, This tranforms a raw data to organized data.
+	 * @param aFile - must be a text file. The program will not run correctly if it's passed wrong values
+	 * @return ArrayList< Quiz >
 	 */
-	
-	public boolean matchExtension(String fileName, String extension) {
-		Pattern pattern = Pattern.compile(extension);
-		Matcher matcher = pattern.matcher(fileName);
-		if (matcher.find()) return true;
-		else return false;
-	}
-
 	public ArrayList<Quiz> handleContentOfTextFile(File aFile){
 		BufferedReader bufReader = null;
 		try {
@@ -88,13 +71,20 @@ public class WorkingWithDocumentExtensions {
 		return handleContentWithFormat(bufReader);
 	}
 	
+	/**
+	 * For only reading word files, This reads content and handle it. 
+	 * In other words, This tranforms a raw data to organized data.
+	 * @param aFile - must be a word file(which contain the extension is ".doc" or ".docx").
+	 * The program will not run correctly if it's passed wrong values
+	 * @param extension - must be ".doc" or ".docx"
+	 * @return ArrayList< Quiz >
+	 */
 	public ArrayList<Quiz> handleContentOfWordFile(File aFile, String extension) {
 		BufferedReader bufReader = null;
 		String content = "";
 		try {
 			FileInputStream finStream = new FileInputStream(aFile);
 			if (extension.equals(".doc")) {
-				Log.e("die", "yep");
 				WordExtractor wordExtractor = new WordExtractor();
 				content = wordExtractor.extractText(finStream);
 				bufReader = new BufferedReader(new StringReader(content));
@@ -116,6 +106,14 @@ public class WorkingWithDocumentExtensions {
 		return handleContentWithFormat(bufReader);
 	}
 
+	/**
+	 * Read line by line and handle each line by following
+	 * determind it is question or answer or the end of quiz. Then, the value
+	 * them are set into properties of Quiz Objects. After all, we've got a
+	 * list of quizs.
+	 * @param aFile - A quiz file
+	 * @return ArrayList< Quiz > - List of quiz in the Quiz File
+	 */
 	public ArrayList<Quiz> handleContentWithFormat(BufferedReader bufReader) {
 		ArrayList<Quiz> alQuiz = new ArrayList<Quiz>();
 		ArrayList<String> answers = new ArrayList<String>();
@@ -129,13 +127,14 @@ public class WorkingWithDocumentExtensions {
 			boolean markedLine = false;
 			do {
 				line = bufReader.readLine();
+				
+				// replace all hidden/invisible/non-printable characters
 				if (isFirstLine) {
-					line = line.replaceFirst("\\p{C}", "");// replace all
-															// hidden/invisible/non-printable
-															// characters
+					line = line.replaceFirst("\\p{C}", "");
 					isFirstLine = false;
 				}
 				if (line != null) {
+					//cut the prefix of each line. Eg: "1.", "A,",...
 					for (int index = 0; index < line.length(); index++) {
 						char chartemp = line.charAt(index);
 						if (chartemp == '*')
@@ -153,6 +152,7 @@ public class WorkingWithDocumentExtensions {
 						}
 					}
 				}
+				//jump into here if already read over a quiz. The content separates each quiz by line "" 
 				if (line == null || line.equals("")) {
 					if (isPriviousEmptyLine || question == null)
 						continue;
@@ -183,4 +183,37 @@ public class WorkingWithDocumentExtensions {
 		return alQuiz;
 	}
 	
+	/**
+	 * Check whether a file name contains an extension or not.
+	 * @param fileName eg: "foo.bar" 
+	 * @param extension eg: ".bar"
+	 * @return true - if it contains<br>
+	 * false - if it's not
+	 */
+	public boolean containsExtension(String fileName, String extension) {
+		Pattern pattern = Pattern.compile(extension);
+		Matcher matcher = pattern.matcher(fileName);
+		if (matcher.find()) return true;
+		else return false;
+	}
+	
+	/**
+	 * Check whether a file name has a valid extension or not 
+	 * by following few extensions the application allows.
+	 * @param fileName
+	 * @param extensions - String[]. All of extensions the application allows
+	 * @return true - if it has. <br>
+	 * false - if it hasn't 
+	 */
+	public boolean hasAValidExtension(String fileName, String[] extensions){
+		String regex="";
+		for (int i = 0; i < extensions.length; i++) {
+			regex = regex + extensions[i].substring(1);
+			if(i!= extensions.length-1) regex = regex+"|";
+		}
+		regex = "((\\.(?i)("+regex+"))$)";
+		Log.d("regex", regex);
+		if(containsExtension(fileName, regex)==true) return true;
+		else return false;
+	}
 }
