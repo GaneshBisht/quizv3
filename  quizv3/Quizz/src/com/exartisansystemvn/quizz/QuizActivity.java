@@ -16,6 +16,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.exartisansystemvn.datamanager.ExamLibraryManager;
+import com.exartisansystemvn.util.FontUlts;
 
 public class QuizActivity extends BaseActivity {
 	private TextView tvQnums;
@@ -121,14 +122,20 @@ public class QuizActivity extends BaseActivity {
 	 */
 	private void showQuizz(int currentQuiznumber) {
 		if (currentQuiznumber - 1 >= 0 && currentQuiznumber - 1 < quiznums) {
-			tvQuestion.setText(libraryManager.getExamContent(examname).get(currentQuiznumber - 1).getQuestion());
+			
+			String qHead = String.valueOf(currentQuiznumber);
+			char ansHead = 'A';
+			FontUlts.setFontFor(tvQuestion, fontName, FontUlts.TYPE_TEXT_VIEW, this);
+			tvQuestion.setText(new String(qHead + "/ " + libraryManager.getExamContent(examname).get(currentQuiznumber - 1).getQuestion()));
 			rdAnswers.removeAllViews();
 
 			for (int i = 0; i < libraryManager.getExamContent(examname).get(currentQuiznumber - 1).getAnswers()
 					.size(); i++) {
+				if (i>0) ansHead++;
 				RadioButton radioButton = new RadioButton(this);
-				radioButton.setText(libraryManager.getExamContent(examname).get(currentQuiznumber - 1)
-						.getAnswers().get(i));
+				FontUlts.setFontFor(radioButton, fontName, FontUlts.TYPE_RADIO_BUTTON, this);
+				radioButton.setText(new String(ansHead + "/ " + libraryManager.getExamContent(examname).get(currentQuiznumber - 1)
+						.getAnswers().get(i)));
 				radioButton.setId(i);
 				if (submited)
 					radioButton.setEnabled(false);
@@ -190,7 +197,7 @@ public class QuizActivity extends BaseActivity {
 		tvResult.setText("" + count);
 		btnSubmit.setEnabled(false);
 		for(int i=0; i<libraryManager.getExamContent(examname).size();i++) {
-			listresult = listresult+(i+1)+". "+ libraryManager.getExamContent(examname).get(i).getAnswers().get(libraryManager.getExamContent(examname).get(i).getCorrectAnswer()).substring(0, 1)+"\n";
+			listresult = new String(listresult+(i+1)+". "+ libraryManager.getExamContent(examname).get(i).getAnswers().get(libraryManager.getExamContent(examname).get(i).getCorrectAnswer()).substring(0, 1)+"\n");
 		}
 		tvListResult.setText(listresult);
 		// for after submit

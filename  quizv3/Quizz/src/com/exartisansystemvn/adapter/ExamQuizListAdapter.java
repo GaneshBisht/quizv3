@@ -2,8 +2,6 @@ package com.exartisansystemvn.adapter;
 
 import java.util.ArrayList;
 
-import com.exartisansystemvn.bean.Quiz;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +12,17 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
+import com.exartisansystemvn.bean.Quiz;
+import com.exartisansystemvn.util.FontUlts;
+
 public class ExamQuizListAdapter extends BaseAdapter {
 	private ArrayList<Quiz> examQuizList;
 	private LayoutInflater inflater;
 	private Context context;
+	private String fontName;
 	private int[] ansId;
 	private boolean[] ansChecks;
-	private boolean isAnsDisable ;
-	
+	private boolean isAnsDisable;
 
 	public boolean isAnsDisable() {
 		return isAnsDisable;
@@ -39,28 +40,34 @@ public class ExamQuizListAdapter extends BaseAdapter {
 		this.ansChecks = ansChecks;
 	}
 
-	public ExamQuizListAdapter(Context context, ArrayList<Quiz> quizData){
+	public ExamQuizListAdapter(Context context, ArrayList<Quiz> quizData) {
+		fontName = FontUlts.DEFAULT;
 		isAnsDisable = false;
 		this.context = context;
 		this.examQuizList = quizData;
 		inflater = LayoutInflater.from(context);
 		ansId = new int[quizData.size()];
 		ansChecks = new boolean[quizData.size()];
-		for(int i=0; i<quizData.size();i++) {
+		for (int i = 0; i < quizData.size(); i++) {
 			ansId[i] = -1;
 			ansChecks[i] = false;
 		}
 	}
-	
-	public void restartState(){
+
+	public void restartState() {
 		isAnsDisable = false;
 		ansId = new int[examQuizList.size()];
 		ansChecks = new boolean[examQuizList.size()];
-		for(int i=0; i<examQuizList.size();i++) {
+		for (int i = 0; i < examQuizList.size(); i++) {
 			ansId[i] = -1;
 			ansChecks[i] = false;
 		}
 	}
+
+	public void setFont(String fontName) {
+		this.fontName = fontName;
+	}
+
 
 	@Override
 	public int getCount() {
@@ -81,41 +88,51 @@ public class ExamQuizListAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		final int pos = position;
-		char[]ansHead = new char[examQuizList.get(position).getAnswers().size()];
-		ansHead[0] = 'A';
-		String[] qHead = new String[examQuizList.size()];
-		for (int i=0; i<qHead.length; i++) qHead[i] = String.valueOf(i + 1);
-		if (convertView == null){
-			convertView = inflater.inflate(com.exartisansystemvn.quizz.R.layout.exam_row, null);
+		char ansHead = 'A';
+		String qHead = String.valueOf(position + 1);
+		if (convertView == null) {
+			convertView = inflater.inflate(
+					com.exartisansystemvn.quizz.R.layout.exam_row, null);
 			holder = new ViewHolder();
-			holder.tvQuestion = (TextView) convertView.findViewById(com.exartisansystemvn.quizz.R.id.tvExamQuestion);
-			holder.rdAnswers = (RadioGroup) convertView.findViewById(com.exartisansystemvn.quizz.R.id.rdExamAnswers);
+			holder.tvQuestion = (TextView) convertView
+					.findViewById(com.exartisansystemvn.quizz.R.id.tvExamQuestion);
+			holder.rdAnswers = (RadioGroup) convertView
+					.findViewById(com.exartisansystemvn.quizz.R.id.rdExamAnswers);
 			convertView.setTag(holder);
-		} else holder = (ViewHolder) convertView.getTag();
-		holder.tvQuestion.setText(new String(qHead[position] + "/ " + examQuizList.get(position).getQuestion()));
-		holder.rdAnswers.removeAllViews();
+		} else
+			holder = (ViewHolder) convertView.getTag();
 		
-        for (int i = 0; i<examQuizList.get(position).getAnswers().size(); i++){
-        	if (i > 0) {
-        		ansHead[i] = ansHead[i-1];
-        		ansHead[i]++;
-        	}
-        	RadioButton radioButton = new RadioButton(context);
-        	radioButton.setId(i);
-			radioButton.setText(new String(ansHead[i] + ". " + examQuizList.get(position).getAnswers().get(i)));
+		FontUlts.setFontFor(holder.tvQuestion, fontName, FontUlts.TYPE_TEXT_VIEW, context);
+		holder.tvQuestion.setText(new String(qHead + "/ "
+				+ examQuizList.get(position).getQuestion()));
+		holder.rdAnswers.removeAllViews();
+
+		for (int i = 0; i < examQuizList.get(position).getAnswers().size(); i++) {
+			if (i > 0) ansHead++;
+			RadioButton radioButton = new RadioButton(context);
+			radioButton.setId(i);
+			radioButton.setText(new String(ansHead + ". "
+					+ examQuizList.get(position).getAnswers().get(i)));
 			radioButton.setEnabled(!isAnsDisable);
-			holder.rdAnswers.addView(radioButton);	
-        }
-        holder.rdAnswers.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				if (checkedId != -1) ansId[pos] = checkedId;
-				if (checkedId == examQuizList.get(pos).getCorrectAnswer()) ansChecks[pos] = true; else ansChecks[pos] = false;
-			}
-		});
-        holder.rdAnswers.clearCheck();
-        holder.rdAnswers.check(ansId[position]);
+			//setFontFor(radioButton);
+			holder.rdAnswers.addView(radioButton);
+		}
+		holder.rdAnswers
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(RadioGroup group, int checkedId) {
+						if (checkedId != -1)
+							ansId[pos] = checkedId;
+						if (checkedId == examQuizList.get(pos)
+								.getCorrectAnswer())
+							ansChecks[pos] = true;
+						else
+							ansChecks[pos] = false;
+					}
+				});
+		holder.rdAnswers.clearCheck();
+		holder.rdAnswers.check(ansId[position]);
 		return convertView;
 	}
 

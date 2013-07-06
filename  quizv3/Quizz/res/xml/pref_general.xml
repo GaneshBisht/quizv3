@@ -31,5 +31,14 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_title_check_method" />
+    
+    <ListPreference
+        android:defaultValue="default"
+        android:entries="@array/pref_font_list_titles"
+        android:entryValues="@array/pref_font_list_values"
+        android:key="font_list"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_title_font" />
 
 </PreferenceScreen>
