@@ -49,13 +49,11 @@ public class SettingActivity extends PreferenceActivity {
 		if (!isSimplePreferences(this)) {
 			return;
 		}
-
 		// In the simplified UI, fragments are not used at all and we instead
 		// use the older PreferenceActivity APIs.
 
 		// Add 'general' preferences.
 		addPreferencesFromResource(R.xml.pref_general);
-
 		/*
 		 * // Add 'notifications' preferences, and a corresponding header.
 		 * PreferenceCategory fakeHeader = new PreferenceCategory(this);
@@ -75,6 +73,7 @@ public class SettingActivity extends PreferenceActivity {
 		// to reflect the new value, per the Android Design guidelines.
 		//bindPreferenceSummaryToValue(findPreference("example_text"));
 		bindPreferenceSummaryToValue(findPreference("check_method_list"));
+		bindPreferenceSummaryToValue(findPreference("font_list"));
 		// bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
 		// bindPreferenceSummaryToValue(findPreference("sync_frequency"));
 	}

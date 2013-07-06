@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.exartisansystemvn.adapter.ExamQuizListAdapter;
 import com.exartisansystemvn.bean.Quiz;
@@ -93,7 +94,7 @@ public class ExamActivity extends BaseActivity {
 		subject = " " + getIntent().getExtras().getString("subject");
 		time = " " + getIntent().getExtras().getString("time") + "'";
 		examQuizListAdapter = new ExamQuizListAdapter(this, shuffleExamQuiz(libraryManager.getExamContent(subject.trim()), true));
-		//examQuizListAdapter = new ExamQuizListAdapter(this, examinationLibrary.get(subject.trim()));
+		examQuizListAdapter.setFont(fontName);
 		btnClickListener = new OnClickListener() {
 			
 			@Override
@@ -150,8 +151,8 @@ public class ExamActivity extends BaseActivity {
 		pop.setContentView(layout);
 		pop.showAtLocation(this.listQuiz, Gravity.BOTTOM, 10, 10);
 		 pop.update(50, 50, 300, 80);*/
-		//Toast toast = Toast.makeText(getBaseContext(), "" + count, Toast.LENGTH_SHORT);
-		//toast.show();
+		Toast toast = Toast.makeText(getBaseContext(), "" + count, Toast.LENGTH_SHORT);
+		toast.show();
 		/*Intent shareIntent = new Intent(Intent.ACTION_SEND);
 		  shareIntent.setType("text/plain");
 		  shareIntent.putExtra(Intent.EXTRA_TEXT, new String("" + count));

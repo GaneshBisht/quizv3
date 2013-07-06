@@ -20,6 +20,7 @@ public abstract class BaseActivity extends Activity {
 	protected static boolean didStart = false;
 	// saving setting variables
 	public static int checkMethod;
+	public static String fontName;
 	// data of the application below
 
 	private final String folderName = "test";
@@ -103,6 +104,7 @@ public abstract class BaseActivity extends Activity {
 				.getDefaultSharedPreferences(this);
 		checkMethod = Integer.valueOf(preferences.getString(
 				"check_method_list", "0"));
+		fontName = preferences.getString("font_list", "default");
 	}
 
 	protected void observeFiles() {
