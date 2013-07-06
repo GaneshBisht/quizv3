@@ -78,7 +78,7 @@ public class QuizActivity extends BaseActivity {
 	}
 
 	protected void initActions() {
-
+		setWillHotUpdateSettings(true);
 		examname = this.getIntent().getExtras().getString("examname");
 		quiznums = libraryManager.getExamContent(examname).size();
 		tvQnums.setText("" + quiznums);

@@ -115,6 +115,7 @@ public class ExamActivity extends BaseActivity {
 
 	@Override
 	protected void initActions() {
+		setWillHotUpdateSettings(true);
 		long time = Long.valueOf(getIntent().getStringExtra("time"))*60000;
 		examTimeCountDown = new CountDownTimer(time, 1000) {
 			
