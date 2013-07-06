@@ -18,11 +18,20 @@ import com.exartisansystemvn.util.WorkingWithDocumentExtensions;
  * 
  */
 public class ExamLibraryManager {
-	private static HashMap<String, Exam> examLibrary;
+	
+	private static ExamLibraryManager singletonManager;
+	private HashMap<String, Exam> examLibrary;
 
-	public ExamLibraryManager() {
-		if (examLibrary == null)
+	private ExamLibraryManager() {
+//		if (examLibrary == null)
 			examLibrary = new HashMap<String, Exam>();
+	}
+	
+	public static synchronized ExamLibraryManager getInstance(){
+		if(singletonManager==null){
+			singletonManager = new ExamLibraryManager();
+		}
+		return singletonManager;
 	}
 
 	public ArrayList<String> getListExamName() {

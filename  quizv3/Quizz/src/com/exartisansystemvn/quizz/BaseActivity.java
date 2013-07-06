@@ -26,7 +26,7 @@ public abstract class BaseActivity extends Activity {
 	private final String folderName = "test";
 	private String[] extension = {".txt",".doc"};
 
-	private ExamLibraryManager examManager = new ExamLibraryManager();
+	private ExamLibraryManager examManager = ExamLibraryManager.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
