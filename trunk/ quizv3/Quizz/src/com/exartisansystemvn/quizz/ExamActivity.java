@@ -90,7 +90,7 @@ public class ExamActivity extends BaseActivity {
 
 	@Override
 	protected void initVariables() {
-		libraryManager = new ExamLibraryManager();
+		libraryManager = ExamLibraryManager.getInstance();
 		subject = " " + getIntent().getExtras().getString("subject");
 		time = " " + getIntent().getExtras().getString("time") + "'";
 		examQuizListAdapter = new ExamQuizListAdapter(this, shuffleExamQuiz(libraryManager.getExamContent(subject.trim()), true));

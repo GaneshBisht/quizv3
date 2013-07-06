@@ -74,7 +74,7 @@ public class ExamHomeActivity extends BaseActivity {
 
 	@Override
 	protected void initVariables() {
-		libraryManager = new ExamLibraryManager();
+		libraryManager = ExamLibraryManager.getInstance();
 		subjectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,libraryManager.getListExamName());
 		subjectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		timeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, timeArray);

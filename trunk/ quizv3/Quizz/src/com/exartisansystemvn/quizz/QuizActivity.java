@@ -47,7 +47,7 @@ public class QuizActivity extends BaseActivity {
 	}
 	
 	protected void initVariables() {
-		libraryManager = new ExamLibraryManager();
+		libraryManager = ExamLibraryManager.getInstance();
 		mCurrentQuiznumber = 1;
 		quiznums = 0;
 		submited = false;

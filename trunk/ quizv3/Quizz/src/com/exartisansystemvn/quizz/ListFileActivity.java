@@ -65,7 +65,7 @@ public class ListFileActivity extends BaseActivity implements OnItemClickListene
 
 	@Override
 	protected void initVariables() {
-		examManager = new ExamLibraryManager();
+		examManager = ExamLibraryManager.getInstance();
 		lvFilesAdapter = new ArrayAdapter<String>(this, R.layout.row, examManager.getListExamName());
 	}
 
