@@ -13,10 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.exartisansystemvn.adapter.ExamQuizListAdapter;
 import com.exartisansystemvn.bean.Quiz;
@@ -24,7 +22,6 @@ import com.exartisansystemvn.datamanager.ExamLibraryManager;
 
 public class ExamActivity extends BaseActivity {
 	
-	private LinearLayout examRootLayout;
 	private TextView tvSubject;
 	private TextView tvTime;
 	private ListView listQuiz;
@@ -77,7 +74,6 @@ public class ExamActivity extends BaseActivity {
 
 	@Override
 	protected void initViews() {
-		examRootLayout = (LinearLayout) findViewById(R.id.examRootLayout);
 		tvSubject = (TextView) findViewById(R.id.tv_subject_title_value);
 		tvSubject.setText(subject);
 		tvTime = (TextView) findViewById(R.id.tv_exam_time_title_value);
@@ -148,12 +144,18 @@ public class ExamActivity extends BaseActivity {
 			if (e)
 				count++;
 		}
+		/*PopupWindow pop = new PopupWindow(this);
+		LinearLayout layout = new LinearLayout(this);
+		layout = (LinearLayout) findViewById(R.layout.exam_home);
+		pop.setContentView(layout);
+		pop.showAtLocation(this.listQuiz, Gravity.BOTTOM, 10, 10);
+		 pop.update(50, 50, 300, 80);*/
 		//Toast toast = Toast.makeText(getBaseContext(), "" + count, Toast.LENGTH_SHORT);
 		//toast.show();
-		Intent shareIntent = new Intent(Intent.ACTION_SEND);
+		/*Intent shareIntent = new Intent(Intent.ACTION_SEND);
 		  shareIntent.setType("text/plain");
 		  shareIntent.putExtra(Intent.EXTRA_TEXT, new String("" + count));
-		  startActivity(Intent.createChooser(shareIntent, "Share..."));
+		  startActivity(Intent.createChooser(shareIntent, "Share..."));*/
 	}
 	
 	private ArrayList<Quiz> shuffleExamQuiz(ArrayList<Quiz> quizList, boolean willShuffleAnswers){
