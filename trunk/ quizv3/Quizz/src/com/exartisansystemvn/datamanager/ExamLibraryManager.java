@@ -5,17 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.os.Environment;
-import android.util.Log;
 
 import com.exartisansystemvn.bean.Exam;
 import com.exartisansystemvn.bean.Quiz;
 import com.exartisansystemvn.util.WorkingWithDocumentExtensions;
 
 /**
- * Sau này sử dụng singleton pattern
- * 
- * @author abc
- * 
+ *  This class is manager of exam library. Which contains data of the application.<br>
+ *  It provides some methods to work with the data such as: add, delete, update,...
  */
 public class ExamLibraryManager {
 	
@@ -27,6 +24,11 @@ public class ExamLibraryManager {
 			examLibrary = new HashMap<String, Exam>();
 	}
 	
+	/**
+	 * Singleton pattern's method to get the unique instance of the class 
+	 * which has declared for whole application. It's just like a global object.
+	 * @return the singleton object of ExamLibrary
+	 */
 	public static synchronized ExamLibraryManager getInstance(){
 		if(singletonManager==null){
 			singletonManager = new ExamLibraryManager();
@@ -34,6 +36,14 @@ public class ExamLibraryManager {
 		return singletonManager;
 	}
 
+	public Object clone() throws CloneNotSupportedException{
+		throw new CloneNotSupportedException();
+	}
+	
+	/**
+	 * Get The list of Exam's Name.
+	 * @return ArrayList< String >
+	 */
 	public ArrayList<String> getListExamName() {
 		ArrayList<String> listExamName = new ArrayList<String>();
 		for (String key : examLibrary.keySet()) {
@@ -41,7 +51,12 @@ public class ExamLibraryManager {
 		}
 		return listExamName;
 	}
-
+	
+	/**
+	 * Get content of the Exam. That is a list of quizs.
+	 * @param examName
+	 * @return ArrayList< Quiz >
+	 */
 	public ArrayList<Quiz> getExamContent(String examName) {
 		String fileName = getFileNameFrom(examName, null);
 		if (fileName != null)
@@ -60,11 +75,22 @@ public class ExamLibraryManager {
 		}
 		return fileName;
 	}
-
+	
+	/**
+	 * Get an exam name from a file name.
+	 * @param fileName
+	 * @return String
+	 */
 	public String getExamNameFrom(String fileName) {
 		return fileName.substring(0, fileName.indexOf("."));
 	}
-
+	
+	/**
+	 * Delete the exam from Exam Library.
+	 * @param fileName - key of the Library. The library manages data by key.<br> Eg: "test.txt", "document.doc",...
+	 * @return true - if adding success <br>
+	 * false - if adding failure
+	 */
 	public boolean deleteExam(String fileName) {
 		if (examLibrary.containsKey(fileName)) {
 			examLibrary.remove(fileName);
@@ -74,12 +100,14 @@ public class ExamLibraryManager {
 	}
 
 	/**
-	 * luc khac viet lai phan kiem tra xem luc nao thi add thanh cong hay ko
-	 * 
-	 * @param folderName
-	 * @param fileName
+	 * Add An Exam into Exam Library
+	 * @param folderName <br> eg: "Test", "Folder",...
+	 * @param fileName - key of the Library. The library manages data by key.<br> Eg: "test.txt", "document.doc",...
+	 * @return true - if adding success <br>
+	 * false - if adding failure
 	 */
-	public void addExam(String folderName, String fileName) {
+	public boolean addExam(String folderName, String fileName) {
+		boolean added;
 		WorkingWithDocumentExtensions docWorker = new WorkingWithDocumentExtensions();
 		Exam examToAdd = new Exam();
 		File examFile = new File(Environment.getExternalStorageDirectory()
@@ -87,24 +115,40 @@ public class ExamLibraryManager {
 				+ "/".concat(folderName)
 				+ "/".concat(fileName));
 		examToAdd.setExamName(getExamNameFrom(fileName));
-		if(docWorker.matchExtension(fileName, ".doc")) 
-			  examToAdd.setContent(docWorker.handleContentOfWordFile(examFile, ".doc"));		
-		else examToAdd.setContent(docWorker.handleContentOfTextFile(examFile));
+		if(docWorker.containsExtension(fileName, ".doc")) {
+			  examToAdd.setContent(docWorker.handleContentOfWordFile(examFile, ".doc"));
+			  added = true;
+			  }	
+		else if(docWorker.containsExtension(fileName, ".txt")){
+			examToAdd.setContent(docWorker.handleContentOfTextFile(examFile));
+			added = true;
+		} else added = false;	
 		
 		examLibrary.put(fileName, examToAdd);
+		return added;
 	}
 
 	/**
-	 * luc khac viet lai phan kiem tra xem luc nao thi update thanh cong hay ko
-	 * 
-	 * @param folderName
-	 * @param fileName
+	 * Call this method if you want to modify content of an exam.
+	 * @param folderName <br> eg: "Test", "Folder",...
+	 * @param fileName - key of the Library. The library manages data by key.<br> Eg: "test.txt", "document.doc",...
+	 * @return true - if adding success <br>
+	 * false - if adding failure
 	 */
-	public void updateExam(String folderName, String fileName) {
-		deleteExam(fileName);
-		addExam(folderName, fileName);
+	public boolean updateExam(String folderName, String fileName) {
+		if (containsKey(fileName)==true) {
+			deleteExam(fileName);
+			addExam(folderName, fileName);
+			return true;
+		} else return false;
+		
 	}
-
+	
+	/**
+	 * Check whether the library contains the key or not.
+	 * @param fileName
+	 * @return
+	 */
 	public boolean containsKey(String fileName) {
 		if (examLibrary.containsKey(fileName))
 			return true;

@@ -24,7 +24,7 @@ public abstract class BaseActivity extends Activity {
 	// data of the application below
 
 	private final String folderName = "test";
-	private String[] extension = {".txt",".doc"};
+	private String[] extensions = {".txt",".doc"};
 
 	private ExamLibraryManager examManager = ExamLibraryManager.getInstance();
 
@@ -79,7 +79,7 @@ public abstract class BaseActivity extends Activity {
 				WorkingWithDocumentExtensions docWorker = new WorkingWithDocumentExtensions();
 				long start = System.currentTimeMillis();
 				lstQuizFile = docWorker.scanFilesInAFolderFromSDCard(folderName,
-						extension);
+						extensions);
 				for (File efile : lstQuizFile) {
 					String fileName = efile.getName();
 					examManager.addExam(folderName, fileName);
@@ -116,7 +116,7 @@ public abstract class BaseActivity extends Activity {
 			@Override
 			public void onEvent(int event, String fileName) {
 				Log.d("FileObserver", event + ":" + directory + "/" + fileName);
-				if (docWorker.matchExtension(fileName, extension[0])||docWorker.matchExtension(fileName, extension[1])) {
+				if (docWorker.hasAValidExtension(fileName, extensions)) {
 					switch (event) {
 					case FileObserver.DELETE:
 						examManager.deleteExam(fileName);
