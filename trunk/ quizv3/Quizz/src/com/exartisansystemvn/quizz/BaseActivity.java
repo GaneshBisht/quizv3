@@ -190,7 +190,7 @@ public abstract class BaseActivity extends Activity implements OnSharedPreferenc
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
-				
+				settingsChanged = false;
 			}
 		});
 		
